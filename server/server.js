@@ -1,66 +1,32 @@
-var mongoose = require('mongoose');
+var express = require('express');
+var bodyParser = require('body-parser');
 
-mongoose.Promise = global.Promise; //can configure to use promises that are built in
-//mongoose handles connection prior to scheduling any queries
-mongoose.connect('mongodb://localhost:27017/TodoApp', {useMongoClient: true});
 
-//create a new model
-//param1: collection name
-//param2: data and its property
-var Todo = mongoose.model('Todo', {
-  text: {
-    type: String,
-    required: true,//validation error if not ,
-    minlength: 1,
-    trim: true//removes leading or trailing white space
-  },
-  completed: {
-    type: Boolean,
-    default: false //default value
-  },
-  completedAt: {
-    type: Number,
-    default: null
-  }
+var {mongoose} = require('./db/mongoose');//destructuring require
+var {Todo} = require('./models/todo');
+var {User} = require('./models/user');
+
+var app = express();
+
+//middleware
+app.use(bodyParser.json()); //can send json with app
+
+//creating a new todos
+app.post('/todos', (req,res) => {
+  var todo = new Todo({
+    text: req.body.text//where request comes from
+  });
+
+  todo.save().then((doc) => {
+    res.send(doc);//send back doc info
+  }, (e) => {
+    res.status(400).send(e);
+  });
+  //console.log(req.body);
 });
 
-//add a todo
-//use model as a constructor
-var newTodo = new Todo({
-  text: 'something to do'//still works even though different type
+//Get- read todos
+
+app.listen(3000, () => {
+  console.log('Started on port 3000');
 });
-
-//save with built in function that returns a promise
-// newTodo.save().then((doc) => {
-//   console.log(`Saved todo, ${doc}`)
-// }, (e) => {
-//   console.log(`Unable to save todo: ${e}`);
-// });
-
-
-//user model - email, password, todos associated with the Users
-//email - require - trim -string - minlength of 1
-var User = mongoose.model('User', {
-  email: {
-    type: String,
-    required: true,
-    minlength: 1,
-    trim: true
-  },
-  password: {
-    type: String
-  },
-  todos: {
-    type: Array
-  }
-});
-
-var newUser = new User({
-  email: 'abhilash.nair@protiviti.com'
-});
-
-newUser.save().then((doc) => {
-  console.log(JSON.stringify(doc, undefined, 2));
-}, (e) => {
-  console.log(`Unable to create user, ${e}`);
-})
