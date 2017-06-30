@@ -21,7 +21,7 @@ describe('POST /todos', () => {
       .post('/todos')
       .send({text})//post to send
       .expect(200)//status expectations
-      .expect((res) => {//test body 
+      .expect((res) => {//test body
         expect(res.body.text).toBe(text);//expect body text to be above
       })
       .end((err, res) => {
