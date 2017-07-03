@@ -91,13 +91,13 @@ app.patch('/todos/:id', (req, res) => {
     body.completedAt = new Date().getTime();//returns time stamp
   } else {
     body.completed = false;
-    body.completdeAt = null;
+    body.completedAt = null;
   }
 
   //set body to updated body
   Todo.findByIdAndUpdate(id, {$set:
     body //pass the updated body
-  }, {new: true})//option to retrieve new updated
+   }, {new: true})//option to retrieve new updated
   .then((todo) => {
     if(!todo) {
       return res.status(404).send();
