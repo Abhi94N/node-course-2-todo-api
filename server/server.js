@@ -40,6 +40,7 @@ app.get('/todos', (req, res) => {
 app.get('/todos/:id', (req, res) => {
   //key -value: url param-value of url param-value
   var id = req.params.id;
+  
   //validate Id using isValud
   if(!ObjectID.isValid(id)) {
     res.status(404).send();
@@ -51,7 +52,7 @@ app.get('/todos/:id', (req, res) => {
     if(!todo) {
       return res.status(404).send();
     }
-      res.send({todo});//to ad custom status code
+    res.send({todo});//to ad custom status code
 
   }).catch((e) => res.status(400).send());
 
