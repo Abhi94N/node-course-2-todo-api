@@ -113,9 +113,7 @@ describe('Get /todos/:id', () => {
 
 describe('DELETE /todos/:id', () => {
   it('should remove a todo', (done) => {
-
     var hexId = todos[1]._id.toHexString();
-
     request(app)
       .delete(`/todos/${hexId}`)
       .expect(200)
@@ -125,7 +123,6 @@ describe('DELETE /todos/:id', () => {
         if(err) {
           return done(err);//error is
         }
-
         //query databse using findById toNotExist
         //expect(test).toNotexist()
         Todo.findById(hexId).then((todo) => {
@@ -135,7 +132,6 @@ describe('DELETE /todos/:id', () => {
       });
 
   });
-
   it('should return 404 if todo not found', (done) => {
       var id = new ObjectID();
       request(app)
@@ -143,7 +139,6 @@ describe('DELETE /todos/:id', () => {
         .expect(404)
         .end(done);
   });
-
   it('should return 404 if object id is invalid', (done) => {
     var id = new ObjectID();
     request(app)

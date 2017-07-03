@@ -1,7 +1,8 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-
+const _ = require('lodash');
+const express = require('express');
+const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
+
 var {mongoose} = require('./db/mongoose');//destructuring require
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -58,7 +59,7 @@ app.get('/todos/:id', (req, res) => {
 
 });
 
-
+//delete a todo
 app.delete('/todos/:id', (req, res) => {
   //get the id
   var id = req.params.id;
@@ -74,6 +75,40 @@ app.delete('/todos/:id', (req, res) => {
     res.send({todo});
   }).catch((e) => res.status(404).send());
 });
+
+
+//patch or update
+app.patch('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  //select params that users can update
+  var body = _.pick(req.body, ['text', 'completed']) //takes an object and removes properties you want to pulloff
+  //validate id
+  if(!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  if(_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime();//returns time stamp
+  } else {
+    body.completed = false;
+    body.completdeAt = null;
+  }
+
+  //set body to updated body
+  Todo.findByIdAndUpdate(id, {$set:
+    body //pass the updated body
+  }, {new: true})//option to retrieve new updated
+  .then((todo) => {
+    if(!todo) {
+      return res.status(404).send();
+    }
+
+    res.send({todo: todo});//respond by sending it to send
+  }).catch((e) => {
+    res.status(400).send();
+  })
+});
+
 
 
 app.listen(port, () => {
