@@ -112,6 +112,24 @@ app.patch('/todos/:id', (req, res) => {
 });
 
 
+//POST /users and use pick to limit what users change
+//shut down server and wipe todo app database and restart the server
+app.post('/users', (req, res) => {
+  //add the user model
+  var user = new User(_.pick(req.body, ['email', 'password']));
+
+  user.save().then(() => {//can empty user object and is not required
+    return user.generateAuthToken();
+
+  }).then((token) => {
+    //x-auth -create custom header to store token so user can authenticate themselves
+    res.header('x-auth', token).send(user);
+  })
+  .catch((e) => {
+    res.status(400).send(e);
+  });
+
+});
 
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
