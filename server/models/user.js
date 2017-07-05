@@ -64,7 +64,26 @@ UserSchema.methods.generateAuthToken = function() {
     return token;//return taken to add to callback
   });//return promise so different file can retrieve promise value
 
+};
 
+//static methods for model instances
+UserSchema.statics.findByToken = function (token) {
+  var User = this;//assigned to model schema
+  var decoded;
+  try {
+    decoded = jwt.verify(token, 'abc123');
+  } catch(e) {
+    // return new Promise((resolve, reject) => {
+    //   reject();
+    // });
+    return Promise.reject('Failed to authenticate');
+  }
+
+  return User.findOne({//return for a promise
+    '_id': decoded._id,
+    'tokens.token': token,//fetch nested values
+    'tokens.access': 'auth'
+  });
 };
 
 //pass schema to model
