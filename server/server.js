@@ -131,9 +131,6 @@ app.post('/users', (req, res) => {
   });
 });
 
-
-
-
 //PRIVATE ROUTES
 //require auth, find associated user, sends user back, pass middlware method before callback
 app.get('/users/me', authenticate ,(req, res) => {

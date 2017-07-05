@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
+
 //user model - email, password, todos associated with the Users
 //email - require - trim -string - minlength of 1
 
@@ -85,6 +87,30 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': 'auth'
   });
 };
+//Useful: http://mongoosejs.com/docs/middleware.html
+UserSchema.pre('save', function(next) {
+  //middleware always requires next to be called before it can move to the next piece of middleware
+  var user = this;//instance method so fetches document
+
+
+  if(user.isModified('password')) {
+    //add to gen salt and hash
+    //user.password
+    bcrypt.genSalt(10,(err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        //store hash inside database
+        user.password = hash;
+        next();//call next whenever finished with middleware
+      });
+    });
+    //set it to user.password = hash
+
+  } else {
+    next();//if user password has not been changed
+  }
+
+
+});//add
 
 //pass schema to model
 var User = mongoose.model('User', UserSchema);
