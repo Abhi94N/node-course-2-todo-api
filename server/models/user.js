@@ -87,6 +87,29 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': 'auth'
   });
 };
+
+//returns user if login credentials are correct
+UserSchema.statics.findByCredentials = function(email, password) {
+  var User = this;
+  return User.findOne({email}).then((user) => {
+    if(!user) {
+      return Promise.reject();
+    }
+
+    return new Promise((resolve, reject) => {
+      //use bcrypt.compare password and user.password
+      bcrypt.compare(password, user.password, (err, res) => {
+        if(res) {//check if compare value is true
+          resolve(user);//founduser
+        } else {
+          reject();
+        }
+
+      });
+    });
+  });
+};
+
 //Useful: http://mongoosejs.com/docs/middleware.html
 UserSchema.pre('save', function(next) {
   //middleware always requires next to be called before it can move to the next piece of middleware

@@ -139,6 +139,20 @@ app.get('/users/me', authenticate ,(req, res) => {
   res.send(req.user);//uses authenticate method passed in
 });
 
+//Login POST /user/login {email, password}
+app.post('/users/login', (req, res) => {
+  var body = _.pick(req.body, ['email', 'password']);
+
+  User.findByCredentials(body.email, body.password).then((user) => {
+    //generate user token
+    return user.generateAuthToken().then((token) => {//keep the chain alive you return
+      res.header('x-auth', token).send(user);//send back user and get the current token to access app
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
 });
