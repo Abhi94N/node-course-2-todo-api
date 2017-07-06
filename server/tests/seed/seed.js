@@ -46,12 +46,9 @@ const populateUsers = (done) => {
     var userTwo = new User(users[1]).save();
 
     //wait till all promises are resolved
-    return Promise.all([userOne, userTwo]).then(() => {
+    return Promise.all([userOne, userTwo]);
 
-    }).then(() => {
-      done();
-    })
-  });
+  }).then(() => done());
 };
 
 module.exports = {
