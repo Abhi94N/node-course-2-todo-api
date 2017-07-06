@@ -68,6 +68,18 @@ UserSchema.methods.generateAuthToken = function() {
 
 };
 
+//remove token
+UserSchema.methods.removeToken = function(token) {
+  var user = this;
+  return user.update({
+    $pull: {//pull removes token from mongodb
+      tokens: {//go to tokens folder
+        token //remove token
+      }
+    }
+  });
+}
+
 //static methods for model instances
 UserSchema.statics.findByToken = function (token) {
   var User = this;//assigned to model schema
