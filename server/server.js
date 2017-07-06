@@ -1,4 +1,4 @@
-require('./config/config');
+require('./config/config');//environment configuration
 
 const _ = require('lodash');
 const express = require('express');
@@ -113,6 +113,8 @@ app.patch('/todos/:id', (req, res) => {
 });
 
 
+
+//Sign up public route
 //POST /users and use pick to limit what users change
 //shut down server and wipe todo app database and restart the server
 app.post('/users', (req, res) => {
@@ -131,7 +133,7 @@ app.post('/users', (req, res) => {
   });
 });
 
-//PRIVATE ROUTES
+//PRIVATE ROUTES - authenticate user
 //require auth, find associated user, sends user back, pass middlware method before callback
 app.get('/users/me', authenticate ,(req, res) => {
   res.send(req.user);//uses authenticate method passed in
