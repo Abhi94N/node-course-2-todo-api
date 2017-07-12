@@ -4,7 +4,7 @@ const {ObjectID} = require('mongodb');
 const {app} = require('./../server');
 const{Todo} = require('./../models/todo');
 const{User} = require('./../models/user');
-const {todos, populateTodos,   users,
+const {todos, populateTodos, users,
   populateUsers} = require('./seed/seed');
   const bcrypt = require('bcryptjs');
 
@@ -52,6 +52,7 @@ describe('POST /todos', () => {
         if(err) {
           return done(err);
         }
+
         Todo.find().then((todos) => {
           expect(todos.length).toBe(2);
           done();//Don't forget done

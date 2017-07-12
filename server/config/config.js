@@ -7,7 +7,7 @@ if(env === 'development' || env === 'test') {
   Object.keys(envConfig).forEach((key) => {
     process.env[key] = envConfig[key];//loops over array for
   });
-  console.log(process.env);
+  
 }
 
 //do not add json configuration in public
